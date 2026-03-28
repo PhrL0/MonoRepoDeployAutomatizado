@@ -3,6 +3,9 @@ kind: ConfigMap # tipo de recurso, no caso, um ConfigMap
 metadata: # metadados do recurso
   name: nginx-config # nome do recurso
 data: # dados do recurso
+  APP_ENV: "production"
+  DB_HOST: "postgres-service"
+  LOG_LEVEL: "info"
   nginx.conf: | # inicio da definição do arquivo de configuração do Nginx
     server {
       listen 80;
