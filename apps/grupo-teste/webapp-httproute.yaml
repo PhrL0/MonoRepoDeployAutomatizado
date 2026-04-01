@@ -9,7 +9,7 @@ spec:
     - name: cluster-gateway-gateway # Nome do seu Gateway existente
       namespace: default
   hostnames:
-    - "minha-app.exemplo.com"
+    - "grupo-teste.internal"
   rules:
     - matches:
         - path:
