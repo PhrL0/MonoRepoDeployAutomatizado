@@ -1,0 +1,40 @@
+# 1. NAMESPACE
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{repo-name}}
+  labels:
+    senai/allowed: "true"
+    # Dica: Adicione uma label de dono para facilitar o filtro depois
+    managed-by: "nimbus-cloud"
+---
+# 2. RESOURCE QUOTA
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: quota-{{repo-name}}
+  namespace: {{repo-name}} # CORRIGIDO: Deve ser o mesmo nome do namespace acima
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
+    persistentvolumeclaims: "5"
+    requests.storage: 10Gi
+---
+# 3. LIMIT RANGE
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{repo-name}}-limits
+  namespace: {{repo-name}}
+spec:
+  limits:
+  - type: Container
+    default:           # Limite máximo automático
+      cpu: 500m
+      memory: 512Mi
+    defaultRequest:    # Reserva mínima automática
+      cpu: 100m
+      memory: 256Mi
