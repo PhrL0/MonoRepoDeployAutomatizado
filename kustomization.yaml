@@ -4,3 +4,4 @@ kind: Kustomization
 
 resources:
   - apps/grupo-teste
+  - apps/grupo-betinho
