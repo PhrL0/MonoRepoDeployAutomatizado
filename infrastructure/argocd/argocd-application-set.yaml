@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grupos-senai-generator
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/PhrL0/argocd-senai-cluster.git'
+        revision: HEAD
+        # O segredo está aqui: o Argo vai "scannear" subpastas dentro de 'apps'
+        directories:
+          - path: apps/*
+  template:
+    metadata:
+      # O nome da Application no Argo CD será o nome da pasta (ex: grupo-01)
+      name: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/PhrL0/argocd-senai-cluster.git'
+        targetRevision: HEAD
+        path: '{{path}}' # Usa o caminho da pasta encontrada (ex: apps/grupo-01)
+      destination:
+        server: 'https://kubernetes.default.svc'
+        # Define que o destino será um namespace com o nome da pasta
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          # IMPORTANTE: Como os grupos podem não ter criado o namespace ainda,
+          # o Argo CD cria automaticamente para eles.
+          - CreateNamespace=true
